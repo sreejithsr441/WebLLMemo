@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- minimal.html — the exact dozen lines shown in the video, nothing else.
+     Open it on a laptop or desktop with Chrome or Edge. The first visit downloads the model (~350 MB). -->
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>WebLLM in a dozen lines</title>
+<style>body{font:18px/1.5 system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;background:#1c2022;color:#eeebe3}#status{color:#929a9c}</style>
+</head>
+<body>
+  <h1>WebLLM in a dozen lines</h1>
+  <p id="status">Starting…</p>
+  <p id="output"></p>
+  <script type="module">
+    import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm@0.2.85";
+    const status = document.getElementById("status"), output = document.getElementById("output");
+
+    const engine = await CreateMLCEngine("Qwen3-0.6B-q4f16_1-MLC", {
+      initProgressCallback: (p) => (status.textContent = p.text),
+    });
+    const chunks = await engine.chat.completions.create({
+      messages: [{ role: "user", content: "Explain WebGPU in one sentence." }],
+      stream: true,
+      extra_body: { enable_thinking: false },   // Qwen3: answer directly, skip the "thinking" step
+    });
+    for await (const c of chunks) {
+      output.textContent += c.choices[0]?.delta.content ?? "";
+    }
+  </script>
+</body>
+</html>

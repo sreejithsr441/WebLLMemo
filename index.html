@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WebLLM demo: AI in your browser</title>
+  <meta name="description" content="A private AI chat that runs entirely in your browser with WebLLM and WebGPU. No server, no sign-up, works offline after the first download.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>AI in your browser</h1>
+    <p class="sub">This chat runs on <em>your</em> computer with WebLLM. Nothing you type leaves this tab.</p>
+  </header>
+
+  <!-- 1. the check from the video: does this browser have WebGPU? -->
+  <section id="check" class="card">
+    <div class="row"><span class="dot" id="gpu-dot"></span><span id="gpu-text">Checking for WebGPU…</span></div>
+    <p id="gpu-help" class="muted" hidden></p>
+  </section>
+
+  <!-- 2. pick a small model first -->
+  <section id="setup" class="card" hidden>
+    <label for="model">Pick a model <span class="muted">(small ones download faster)</span></label>
+    <div class="row wrap">
+      <select id="model"></select>
+      <button id="load" class="primary">Load model</button>
+    </div>
+    <p id="cache-note" class="muted"></p>
+    <!-- 3. the progress bar, so the download never looks frozen -->
+    <div id="progress" hidden>
+      <div class="bar"><div id="bar-fill"></div></div>
+      <p id="progress-text" class="muted small"></p>
+    </div>
+  </section>
+
+  <!-- 4. the chat -->
+  <section id="chat" class="card" hidden>
+    <div id="messages" aria-live="polite"></div>
+    <form id="form" class="row">
+      <input id="input" autocomplete="off" placeholder="Ask anything… try turning your Wi-Fi off first" disabled>
+      <button id="send" class="primary" disabled>Send</button>
+      <button id="stop" type="button" hidden>Stop</button>
+    </form>
+    <p id="stats" class="muted small"></p>
+  </section>
+
+  <footer class="muted small">
+    Built with <a href="https://github.com/mlc-ai/web-llm" target="_blank" rel="noopener">WebLLM</a>.
+    Want the bare minimum? See <a href="minimal.html">minimal.html</a>, the dozen lines from the video.
+    Official demo: <a href="https://chat.webllm.ai" target="_blank" rel="noopener">chat.webllm.ai</a>.
+  </footer>
+
+  <script>
+    // Opened by double-clicking the file? Browsers block this kind of page from file://, so say how to open it.
+    if (location.protocol === "file:") {
+      document.getElementById("gpu-dot").className = "dot bad";
+      document.getElementById("gpu-text").textContent = "This page needs to be opened from a web address, not straight from the folder.";
+      const h = document.getElementById("gpu-help");
+      h.innerHTML = "Put it on GitHub Pages (see README), or in this folder run <code>python3 -m http.server 8000</code> and open <a href='http://localhost:8000'>http://localhost:8000</a>.";
+      h.hidden = false;
+    }
+  </script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
